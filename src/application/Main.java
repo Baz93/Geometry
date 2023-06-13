@@ -1,4 +1,4 @@
-package geometry;
+package application;
 
 import javafx.application.Application;
 import javafx.scene.Group;

@@ -1,6 +1,6 @@
 package composition;
 
-import math.graph.Vertex;
+import graph.Vertex;
 
 public class Variable {
     private final String command;

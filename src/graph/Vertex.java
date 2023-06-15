@@ -28,11 +28,11 @@ public class Vertex {
         return value;
     }
 
-    public Value evaluate() {
+    public void evaluate() {
         List<Value> inputs = new ArrayList<>();
         for (Vertex vertex : parents) {
             inputs.add(vertex.value);
         }
-        return function.apply(inputs);
+        value = function.apply(inputs);
     }
 }

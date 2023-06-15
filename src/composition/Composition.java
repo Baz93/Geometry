@@ -1,15 +1,20 @@
 package composition;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import graph.Graph;
+import graph.Tool;
 import graph.Vertex;
 import math.entities.RealNumber;
 import math.functions.ConstFunction;
+import math.functions.Function;
 import math.values.Value;
 
 public class Composition {
+    private Map<String, Function> functions;
     private Map<String, Tool> tools;
     private Map<String, Variable> variables;
     private Graph graph;
@@ -69,12 +74,24 @@ public class Composition {
             return new Vertex(new ConstFunction(RealNumber.type, value), Arrays.asList());
         }
         String name = reader.readName();
+        if (functions.containsKey(name)) {
+            List<Vertex> inputs = new ArrayList<>();
+            assert reader.readChar() == '(' : "Opening parenthesis expected";
+            while (reader.currentChar() != ')') {
+                if (!inputs.isEmpty()) {
+                    assert reader.readChar() == ',' : "Comma expected";
+                }
+                inputs.add(calcExpression(reader));
+            }
+            assert reader.readChar() == ')' : "Closing parenthesis expected";
+            return new Vertex(functions.get(name), inputs);
+        }
         return variables.get(name).vertex;
     }
 
     public Vertex calcAddendum(CommandReader reader, boolean canStartWithMinus) {
         Vertex cur = calcMultiple(reader, canStartWithMinus);
-        while ("+-)\n".indexOf(reader.currentChar()) == -1) {
+        while ("+-),\n".indexOf(reader.currentChar()) == -1) {
             char sign = reader.readChar();
             Vertex next = calcAddendum(reader, true);
             switch (sign) {
@@ -91,7 +108,7 @@ public class Composition {
 
     public Vertex calcExpression(CommandReader reader) {
         Vertex cur = calcAddendum(reader, true);
-        while (")\n".indexOf(reader.currentChar()) == -1) {
+        while ("),\n".indexOf(reader.currentChar()) == -1) {
             char sign = reader.readChar();
             Vertex next = calcAddendum(reader, false);
             switch (sign) {

@@ -8,11 +8,11 @@ public class CompositeType implements Type {
     private final String name;
     public final Map<String, Type> fields;
 
-    public CompositeType(String name, Iterable<Map.Entry<String, Type>> fields) {
+    public CompositeType(String name, List<Declaration> fields) {
         this.name = name;
         this.fields = new LinkedHashMap<>();
-        for (Map.Entry<String, Type> item : fields) {
-            this.fields.put(item.getKey(), item.getValue());
+        for (Declaration item : fields) {
+            this.fields.put(item.name, item.type);
         }
     }
 
